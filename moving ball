@@ -1,0 +1,43 @@
+from cmu_graphics import *
+import cv2
+import mediapipe as mp
+from google.protobuf.json_format import MessageToDict
+
+
+def onAppStart(app):
+    app.cx=200
+    app.cy=200
+    app.cap = cv2.VideoCapture(1)  # Initialize webcam
+    app.detector = handDetector() 
+    #app.stepPerSecond= 
+
+def redrawAll(app):
+    print('hi')
+    drawCircle(app.cx,app.cy,20, fill="red")
+
+
+def onStep(app):
+    cvRun(app)
+
+#code ignored
+
+def cvRun(app):
+
+    success, img = app.cap.read()  # Read a frame from the webcam
+    if not success:
+        print("Failed to capture image")
+    
+    img = cv2.flip(img, 1)  # Flip the image horizontally for a mirror effect
+    img = app.detector.findHands(img)  # Find hands and draw on image
+    app.detector.findPosition(img,app)  # Get positions of landmarks
+    
+    
+    # Show the image with landmarks
+    cv2.imshow("Image", img)
+
+
+
+def main():
+    runApp()
+
+main()
